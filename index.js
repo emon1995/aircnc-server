@@ -66,6 +66,14 @@ async function run() {
       res.send(result);
     });
 
+    // get a filtered room
+    app.get("/rooms/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { "host.email": email };
+      const result = await roomsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // save a room in database
     app.post("/rooms", async (req, res) => {
       const room = req.body;
@@ -95,6 +103,7 @@ async function run() {
     // delete a booking
     app.get("/bookings/:id", async (req, res) => {
       const id = req.params.id;
+      console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await bookingsCollection.deleteOne(query);
       res.send(result);
