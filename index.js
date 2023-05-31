@@ -75,9 +75,23 @@ async function run() {
 
     // save a bookings in database
     app.post("/bookings", async (req, res) => {
-      const room = req.body;
-      const result = await bookingsCollection.insertOne(room);
+      const booking = req.body;
+      const result = await bookingsCollection.insertOne(booking);
       res.send(result);
+    });
+
+    // update room booking status
+    app.patch("/rooms/status/:id", async (req, res) => {
+      const id = req.params.id;
+      const status = req.body.status;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          booked: status,
+        },
+      };
+      const update = await roomsCollection.updateOne(query, updateDoc);
+      res.send(update);
     });
 
     // Send a ping to confirm a successful connection
