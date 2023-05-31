@@ -73,6 +73,13 @@ async function run() {
       res.send(result);
     });
 
+    // save a bookings in database
+    app.post("/bookings", async (req, res) => {
+      const room = req.body;
+      const result = await bookingsCollection.insertOne(room);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
