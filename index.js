@@ -81,6 +81,14 @@ async function run() {
       res.send(result);
     });
 
+    // delete a single room
+    app.delete("/room/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await roomsCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // get bookings for guest
     app.get("/bookings", async (req, res) => {
       const email = req.query.email;
@@ -101,9 +109,9 @@ async function run() {
     });
 
     // delete a booking
-    app.get("/bookings/:id", async (req, res) => {
+    app.delete("/bookings/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+      // console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await bookingsCollection.deleteOne(query);
       res.send(result);
