@@ -92,6 +92,14 @@ async function run() {
       res.send(result);
     });
 
+    // delete a booking
+    app.get("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookingsCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // update room booking status
     app.patch("/rooms/status/:id", async (req, res) => {
       const id = req.params.id;
