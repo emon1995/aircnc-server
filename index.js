@@ -81,8 +81,8 @@ async function run() {
       res.send(result);
     });
 
-    // delete a single room
-    app.delete("/room/:id", async (req, res) => {
+    // delete a host room
+    app.delete("/rooms/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await roomsCollection.deleteOne(query);
