@@ -30,6 +30,14 @@ async function run() {
     const roomsCollection = client.db("aircncDb").collection("rooms");
     const bookingsCollection = client.db("aircncDb").collection("bookings");
 
+    // get user
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+
     // Save user email and role in DB
     app.put("/users/:email", async (req, res) => {
       const email = req.params.email;
