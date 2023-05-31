@@ -50,6 +50,14 @@ async function run() {
       res.send(result);
     });
 
+    // get a single room
+    app.get("/room/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await roomsCollection.findOne(query);
+      res.send(result);
+    });
+
     // save a room in database
     app.post("/rooms", async (req, res) => {
       const room = req.body;
