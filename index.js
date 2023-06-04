@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 const morgan = require('morgan');
+const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -31,6 +32,14 @@ async function run() {
     const usersCollection = client.db("aircncDb").collection("users");
     const roomsCollection = client.db("aircncDb").collection("rooms");
     const bookingsCollection = client.db("aircncDb").collection("bookings");
+
+    // create jwt token
+    app.post("/jwt", (req, res) => {
+      const email = req.body;
+      const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+      console.log(email, token);
+      res.send({ token });
+    })
 
     // get user
     app.get("/users/:email", async (req, res) => {
