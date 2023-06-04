@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
+const morgan = require('morgan');
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -12,6 +13,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(morgan("dev"));
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.idgt1xz.mongodb.net/?retryWrites=true&w=majority`;
@@ -48,7 +50,7 @@ async function run() {
         $set: user,
       };
       const result = await usersCollection.updateOne(query, updateDoc, options);
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
 
@@ -97,6 +99,18 @@ async function run() {
         res.send([]);
       }
       const query = { "guest.email": email };
+      const result = await bookingsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // get bookings for Host
+    app.get("/bookings/host", async (req, res) => {
+      const email = req.query.email;
+
+      if (!email) {
+        res.send([]);
+      }
+      const query = { host: email };
       const result = await bookingsCollection.find(query).toArray();
       res.send(result);
     });
