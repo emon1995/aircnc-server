@@ -5,6 +5,7 @@ require("dotenv").config();
 const morgan = require('morgan');
 const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
+const stripe = require('stripe')(process.env.PAYMENT_SECRET_KEY)
 
 // middleware
 const corsOptions = {
@@ -53,7 +54,7 @@ async function run() {
     app.post("/jwt", (req, res) => {
       const email = req.body;
       const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-      console.log(email, token);
+      // console.log(email, token);
       res.send({ token });
     })
 
@@ -143,6 +144,23 @@ async function run() {
       const result = await bookingsCollection.find(query).toArray();
       res.send(result);
     });
+
+    // payment intent
+    app.post("/create-payment-intent", verifyJWT, async (req, res) => {
+      const { price } = req.body;
+      const amount = parseFloat(price) * 100;
+      if (!price) {
+        return;
+      }
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ['card'],
+      })
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+    })
 
     // save a bookings in database
     app.post("/bookings", async (req, res) => {
